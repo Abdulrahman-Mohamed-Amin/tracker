@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مسار — الرسوم البيانية</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="charts.css">
+</head>
+<body>
+
+<div class="app" dir="rtl">
+  <div class="topbar"><div class="topbar-inner">
+    <div class="brand">
+      <h1>الرسوم البيانية</h1>
+      <a class="chart-link" href="index.html" title="رجوع للرئيسية">←</a>
+    </div>
+    <a class="back-link" href="index.html" style="margin-top:8px;display:inline-flex">رجوع لصفحة العادات</a>
+  </div></div>
+
+  <section>
+    <div class="section-head"><h2>نسبة الالتزام الكلية</h2><span class="sub" id="rangeLabel"></span></div>
+    <div class="rings-row" id="ringsRow"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>القراءة يوميًا</h2></div>
+    <div class="chart-card">
+      <div class="chart-card-head">
+        <h3 id="readChartTitle">صفحات كل يوم</h3>
+        <span class="sub" id="readChartSub"></span>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-scroll"><svg id="readChart"></svg></div>
+        <div class="chart-tooltip" id="readTooltip"></div>
+      </div>
+      <div class="chart-legend">
+        <div class="item"><span class="sw" style="background:var(--accent-read)"></span> حققت الهدف</div>
+        <div class="item"><span class="sw" style="background:var(--accent-read);opacity:.4"></span> أقل من الهدف</div>
+        <div class="item"><span class="sw dashed"></span> الهدف اليومي</div>
+      </div>
+      <div class="chart-caption">اسحب يمين/يسار لو الأيام أكتر من عرض الشاشة، واضغط على أي عمود عشان تشوف رقمه.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>حضور الجيم أسبوعيًا</h2></div>
+    <div class="chart-card">
+      <div class="chart-card-head">
+        <h3>أيام الحضور لكل أسبوع</h3>
+        <span class="sub" id="gymChartSub"></span>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-scroll"><svg id="gymChart"></svg></div>
+        <div class="chart-tooltip" id="gymTooltip"></div>
+      </div>
+      <div class="chart-legend">
+        <div class="item"><span class="sw" style="background:var(--accent-gym)"></span> حقق هدف الأسبوع</div>
+        <div class="item"><span class="sw" style="background:var(--accent-gym);opacity:.4"></span> أقل من الهدف</div>
+        <div class="item"><span class="sw dashed"></span> الهدف الأسبوعي</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-note">البيانات مأخوذة من نفس التخزين المحلي في صفحة العادات — أي تحديث هناك ينعكس هنا تلقائيًا.</div>
+</div>
+
+<script src="charts.js"></script>
+</body>
+</html>

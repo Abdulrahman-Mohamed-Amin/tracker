@@ -1,0 +1,60 @@
+/* extends tokens & base rules defined in style.css */
+
+.back-link{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--ink-muted);text-decoration:none;font-size:12.5px;font-weight:700;
+  padding:6px 10px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border-soft);
+}
+.back-link:active{background:var(--border-soft);}
+
+.chart-link{
+  width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  background:var(--surface-2);border:1px solid var(--border-soft);color:var(--ink);text-decoration:none;
+  font-size:16px;flex:none;
+}
+
+/* rings summary */
+.rings-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ring-card{
+  background:var(--surface);border:1px solid var(--border-soft);border-radius:18px;
+  padding:16px 12px;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.ring-card svg{display:block;}
+.ring-num{font-family:'Cairo',sans-serif;font-weight:800;font-size:20px;font-variant-numeric:tabular-nums;}
+.ring-title{font-size:12.5px;font-weight:700;color:var(--ink);}
+.ring-sub{font-size:11px;color:var(--ink-faint);font-weight:600;text-align:center;}
+
+/* chart card */
+.chart-card{
+  background:var(--surface);border:1px solid var(--border-soft);border-radius:18px;
+  padding:16px 14px;box-shadow:var(--shadow);
+}
+.chart-card-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;}
+.chart-card-head h3{margin:0;font-size:14px;font-weight:800;}
+.chart-card-head .sub{font-size:11.5px;color:var(--ink-faint);font-weight:600;}
+.chart-caption{font-size:11.5px;color:var(--ink-faint);margin-top:10px;line-height:1.6;}
+.chart-scroll{overflow-x:auto;margin:10px -4px 0;padding:4px;}
+.chart-scroll svg{display:block;overflow:visible;}
+
+.chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;}
+.chart-legend .item{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-muted);font-weight:600;}
+.chart-legend .sw{width:12px;height:3px;border-radius:2px;}
+.chart-legend .sw.dashed{background:transparent;border-top:2px dashed var(--accent-milestone);width:14px;height:0;}
+
+.chart-tooltip{
+  position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);
+  font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;padding:5px 9px;border-radius:8px;
+  white-space:nowrap;transform:translate(-50%,-115%);opacity:0;transition:opacity .12s;z-index:5;
+  font-variant-numeric:tabular-nums;
+}
+.chart-tooltip.show{opacity:1;}
+.chart-wrap{position:relative;}
+
+.axis-label{font-size:9px;fill:var(--ink-faint);font-family:'Tajawal',sans-serif;font-variant-numeric:tabular-nums;}
+.grid-line{stroke:var(--border-soft);stroke-width:1;}
+.target-line{stroke:var(--accent-milestone);stroke-width:1.5;stroke-dasharray:4 3;}
+.bar-track{fill:var(--surface-2);}
+
+@media (min-width:520px){
+  .rings-row{grid-template-columns:repeat(2,1fr);}
+}

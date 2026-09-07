@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مسار — تتبع عاداتك</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="charts.css">
+</head>
+<body>
+
+<div class="app" dir="rtl">
+  <div class="topbar"><div class="topbar-inner">
+    <div class="brand">
+      <h1>مسار</h1>
+      <a class="chart-link" href="charts.html" title="الرسوم البيانية">📊</a>
+    </div>
+    <div class="date" id="todayDate" style="margin-top:2px"></div>
+    <div class="glance" id="glanceRow"></div>
+  </div></div>
+
+  <section>
+    <div class="section-head"><h2>اليوم</h2><span class="sub" id="todayLabel"></span></div>
+    <div class="today-grid" id="todayGrid"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>هذا الأسبوع</h2><span class="sub" id="weekRangeLabel"></span></div>
+    <div id="weekStrips"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>لمحة سريعة</h2></div>
+    <div class="stats-row" id="statsRow"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>السجل الشهري</h2></div>
+    <div class="tabs" id="monthTabs"></div>
+    <div class="month-card">
+      <div class="month-nav">
+        <button id="prevMonth">‹</button>
+        <div class="month-label" id="monthLabel"></div>
+        <button id="nextMonth">›</button>
+      </div>
+      <div class="month-grid" id="monthGrid"></div>
+      <div class="legend" id="monthLegend"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>إدارة العادات</h2></div>
+    <div class="manage-card">
+      <div id="habitList"></div>
+      <button class="add-habit-btn" id="openAddHabit">+ إضافة عادة جديدة</button>
+    </div>
+  </section>
+
+  <div class="footer-note">بياناتك تُحفظ على جهازك فقط، ولا تُرسل لأي مكان آخر.</div>
+</div>
+
+<div class="fab"><button id="fabAdd">＋ عادة جديدة</button></div>
+
+<!-- add habit sheet -->
+<div class="overlay" id="addOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h3>عادة جديدة</h3>
+    <div class="field"><label>اسم العادة</label><input type="text" id="newName" placeholder="مثال: شرب الماء"></div>
+    <div class="field"><label>رمز (إيموجي)</label><input type="text" id="newIcon" placeholder="💧" maxlength="4"></div>
+    <div class="field"><label>نوع التتبع</label>
+      <div class="type-row">
+        <div class="type-opt active" data-type="check" id="typeCheck">تسجيل حضور / راحة</div>
+        <div class="type-opt" data-type="count" id="typeCount">عدّاد يومي (رقم)</div>
+      </div>
+    </div>
+    <div class="field" id="goalField"><label>الهدف الأسبوعي (عدد أيام)</label><input type="number" id="newGoal" value="3" min="1" max="7"></div>
+    <div class="field" id="targetField" style="display:none"><label>الهدف اليومي</label><input type="number" id="newTarget" value="10" min="1"></div>
+    <div class="field" id="unitField" style="display:none"><label>الوحدة</label><input type="text" id="newUnit" placeholder="صفحة"></div>
+    <div class="sheet-actions">
+      <button class="btn ghost" id="cancelAdd">إلغاء</button>
+      <button class="btn primary" id="saveAdd">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- edit day count sheet -->
+<div class="overlay" id="editOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h3 id="editTitle">تعديل اليوم</h3>
+    <div class="count-row" style="justify-content:center;margin:14px 0;">
+      <div class="stepper">
+        <button id="editMinus">−</button>
+        <div class="val mono" id="editVal">0</div>
+        <button id="editPlus">+</button>
+      </div>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn ghost" id="cancelEdit">إلغاء</button>
+      <button class="btn primary" id="saveEdit">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
