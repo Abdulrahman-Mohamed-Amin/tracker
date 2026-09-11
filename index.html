@@ -22,6 +22,7 @@
   <section>
     <div class="section-head"><h2>اليوم</h2><span class="sub" id="todayLabel"></span></div>
     <div class="today-grid" id="todayGrid"></div>
+    <button class="backfill-link" id="openBackfill">↺ نسيت يوم فات؟ سجّله دلوقتي</button>
   </section>
 
   <section>
@@ -92,13 +93,28 @@
     <div class="count-row" style="justify-content:center;margin:14px 0;">
       <div class="stepper">
         <button id="editMinus">−</button>
-        <div class="val mono" id="editVal">0</div>
+        <input type="number" inputmode="numeric" class="stepper-input mono" id="editVal" value="0" min="0">
         <button id="editPlus">+</button>
       </div>
     </div>
     <div class="sheet-actions">
       <button class="btn ghost" id="cancelEdit">إلغاء</button>
       <button class="btn primary" id="saveEdit">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- backfill (log a missed day) sheet -->
+<div class="overlay" id="backfillOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h3>تسجيل يوم فات</h3>
+    <div class="field"><label>العادة</label><div class="type-row" id="backfillHabits"></div></div>
+    <div class="field"><label>التاريخ</label><input type="date" id="backfillDate"></div>
+    <div id="backfillBody"></div>
+    <div class="sheet-actions">
+      <button class="btn ghost" id="cancelBackfill">إلغاء</button>
+      <button class="btn primary" id="saveBackfill">حفظ</button>
     </div>
   </div>
 </div>

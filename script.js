@@ -222,19 +222,27 @@ function renderTodayCards(){
       var countRow = el('div','count-row');
       var stepper = el('div','stepper');
       var minus = el('button',null,'−');
-      var display = el('div','val mono', val);
+      var input = document.createElement('input');
+      input.type = 'number'; input.inputMode = 'numeric'; input.min = '0';
+      input.className = 'stepper-input mono'; input.value = val;
       var plus = el('button',null,'+');
       minus.addEventListener('click', function(){ var v=Math.max(0,(getEntry(h.id,tkey)||0)-1); setEntry(h.id,tkey,v); renderAll(); });
       plus.addEventListener('click', function(){ var v=(getEntry(h.id,tkey)||0)+1; setEntry(h.id,tkey,v); renderAll(); });
-      stepper.appendChild(minus); stepper.appendChild(display); stepper.appendChild(plus);
+      input.addEventListener('change', function(){
+        var v = Math.max(0, parseInt(input.value,10) || 0);
+        setEntry(h.id, tkey, v);
+        renderAll();
+      });
+      stepper.appendChild(minus); stepper.appendChild(input); stepper.appendChild(plus);
       countRow.appendChild(stepper);
-      countRow.appendChild(el('div',null,'<span style="font-size:12px;color:var(--ink-faint);font-weight:600">'+(h.unit||'')+' اليوم</span>'));
+      countRow.appendChild(el('div','count-unit', h.unit||''));
       card.appendChild(countRow);
 
       var quick = el('div','quick-row');
       [5,10,15,20].forEach(function(n){
-        var qb = el('button','quick-btn','+'+n);
-        qb.addEventListener('click', function(){ var v=(getEntry(h.id,tkey)||0)+n; setEntry(h.id,tkey,v); renderAll(); });
+        var qb = el('button','quick-btn', n);
+        if(val === n) qb.classList.add('active');
+        qb.addEventListener('click', function(){ setEntry(h.id,tkey,n); renderAll(); });
         quick.appendChild(qb);
       });
       card.appendChild(quick);
@@ -537,7 +545,7 @@ var editOverlay = document.getElementById('editOverlay');
 function openEditSheet(habit, dkey, dateObj){
   editCtx = { habit:habit, dkey:dkey };
   document.getElementById('editTitle').textContent = habit.name + " · " + fmtShort(dateObj);
-  document.getElementById('editVal').textContent = getEntry(habit.id, dkey) || 0;
+  document.getElementById('editVal').value = getEntry(habit.id, dkey) || 0;
   editOverlay.classList.add('open');
 }
 function closeEdit(){ editOverlay.classList.remove('open'); editCtx=null; }
@@ -545,17 +553,101 @@ document.getElementById('cancelEdit').addEventListener('click', closeEdit);
 editOverlay.addEventListener('click', function(e){ if(e.target===editOverlay) closeEdit(); });
 document.getElementById('editMinus').addEventListener('click', function(){
   var v = document.getElementById('editVal');
-  v.textContent = Math.max(0, parseInt(v.textContent,10)-1);
+  v.value = Math.max(0, (parseInt(v.value,10)||0)-1);
 });
 document.getElementById('editPlus').addEventListener('click', function(){
   var v = document.getElementById('editVal');
-  v.textContent = parseInt(v.textContent,10)+1;
+  v.value = (parseInt(v.value,10)||0)+1;
 });
 document.getElementById('saveEdit').addEventListener('click', function(){
   if(!editCtx) return;
-  var val = parseInt(document.getElementById('editVal').textContent,10) || 0;
+  var val = Math.max(0, parseInt(document.getElementById('editVal').value,10) || 0);
   setEntry(editCtx.habit.id, editCtx.dkey, val);
   closeEdit();
+  renderAll();
+});
+
+/* ---------- backfill (log a missed day for any habit) ---------- */
+var backfillOverlay = document.getElementById('backfillOverlay');
+var backfillHabitIdx = 0;
+
+function renderBackfillHabits(){
+  var wrap = document.getElementById('backfillHabits');
+  wrap.className = 'tabs';
+  wrap.innerHTML = "";
+  data.habits.forEach(function(h, idx){
+    var b = el('button','tab-btn', (h.icon||'')+' '+h.name);
+    if(idx === backfillHabitIdx){ b.classList.add('active'); b.style.background = habitColor(h, idx); }
+    b.addEventListener('click', function(){ backfillHabitIdx = idx; renderBackfillHabits(); renderBackfillBody(); });
+    wrap.appendChild(b);
+  });
+}
+
+function renderBackfillBody(){
+  var body = document.getElementById('backfillBody');
+  body.innerHTML = "";
+  var h = data.habits[backfillHabitIdx];
+  if(!h) return;
+  var dkey = document.getElementById('backfillDate').value;
+  if(h.type === "state"){
+    var row = el('div','state-row');
+    var current = dkey ? getEntry(h.id, dkey) : undefined;
+    h.states.forEach(function(st){
+      var btn = el('button','state-btn', '<span class="ic">'+(st.key===h.states[0].key?'💪':'😌')+'</span><span>'+st.label+'</span>');
+      if(current === st.key){ btn.classList.add('active'); btn.style.background = st.color; }
+      btn.dataset.key = st.key;
+      btn.addEventListener('click', function(){
+        row.querySelectorAll('.state-btn').forEach(function(b){ b.classList.remove('active'); b.style.background=""; });
+        if(btn.classList.contains('_sel')){ btn.classList.remove('_sel'); }
+        else {
+          row.querySelectorAll('.state-btn').forEach(function(b){ b.classList.remove('_sel'); });
+          btn.classList.add('_sel','active'); btn.style.background = st.color;
+        }
+      });
+      if(current === st.key) btn.classList.add('_sel');
+      row.appendChild(btn);
+    });
+    body.appendChild(row);
+  } else {
+    var val = dkey ? (getEntry(h.id, dkey) || 0) : 0;
+    var field = el('div','field');
+    field.innerHTML = '<label>عدد '+(h.unit||'')+'</label>';
+    var input = document.createElement('input');
+    input.type = 'number'; input.inputMode = 'numeric'; input.min = '0'; input.id = 'backfillCount'; input.value = val;
+    field.appendChild(input);
+    body.appendChild(field);
+  }
+}
+
+function openBackfill(){
+  backfillHabitIdx = 0;
+  var dateInput = document.getElementById('backfillDate');
+  dateInput.min = data.startDate;
+  dateInput.max = dateKey(todayDate());
+  dateInput.value = dateKey(addDays(todayDate(),-1));
+  renderBackfillHabits();
+  renderBackfillBody();
+  backfillOverlay.classList.add('open');
+}
+function closeBackfill(){ backfillOverlay.classList.remove('open'); }
+document.getElementById('openBackfill').addEventListener('click', openBackfill);
+document.getElementById('cancelBackfill').addEventListener('click', closeBackfill);
+backfillOverlay.addEventListener('click', function(e){ if(e.target===backfillOverlay) closeBackfill(); });
+document.getElementById('backfillDate').addEventListener('change', renderBackfillBody);
+
+document.getElementById('saveBackfill').addEventListener('click', function(){
+  var h = data.habits[backfillHabitIdx];
+  var dkey = document.getElementById('backfillDate').value;
+  if(!h || !dkey){ alert('اختر العادة والتاريخ'); return; }
+  if(dkey < data.startDate || dkey > dateKey(todayDate())){ alert('التاريخ لازم يكون بين بداية التتبع واليوم'); return; }
+  if(h.type === "state"){
+    var sel = document.querySelector('#backfillBody .state-btn._sel');
+    setEntry(h.id, dkey, sel ? sel.dataset.key : undefined);
+  } else {
+    var v = Math.max(0, parseInt((document.getElementById('backfillCount')||{}).value,10) || 0);
+    setEntry(h.id, dkey, v);
+  }
+  closeBackfill();
   renderAll();
 });
 
