@@ -22,7 +22,7 @@ function defaultData(){
 }
 
 var CYCLE_COLORS = ["var(--accent-gym)","var(--accent-rest)","var(--accent-read)","var(--accent-success)"];
-var CYCLE_SOFT = ["var(--accent-gym-soft)","var(--accent-rest-soft)","var(--accent-read-soft)","var(--accent-gym-soft)"];
+var CYCLE_SOFT = ["var(--accent-gym-soft)","var(--accent-rest-soft)","var(--accent-read-soft)","var(--accent-success-soft)"];
 
 function seedHistory(d){
   var start = new Date(d.startDate+"T00:00:00");
@@ -102,6 +102,18 @@ function setEntry(habitId, dkey, value){
     data.entries[habitId][dkey] = value;
   }
   save(data);
+}
+
+function cycleState(habit, dkey){
+  var cur = getEntry(habit.id, dkey);
+  var keys = habit.states.map(function(s){return s.key;});
+  var next;
+  if(cur === undefined) next = keys[0];
+  else {
+    var i = keys.indexOf(cur);
+    next = (i+1 < keys.length) ? keys[i+1] : undefined;
+  }
+  setEntry(habit.id, dkey, next);
 }
 
 function weeklyGoalText(h){ return h.weeklyGoalMin ? (h.weeklyGoalMin+"-"+h.weeklyGoalMax) : h.weeklyGoal; }
@@ -278,15 +290,7 @@ function renderWeekStrips(){
         }
         if(!future){
           cell.addEventListener('click', function(){
-            var cur = getEntry(h.id, dkey);
-            var keys = h.states.map(function(s){return s.key;});
-            var next;
-            if(cur === undefined) next = keys[0];
-            else {
-              var i = keys.indexOf(cur);
-              next = (i+1 < keys.length) ? keys[i+1] : undefined;
-            }
-            setEntry(h.id, dkey, next);
+            cycleState(h, dkey);
             renderAll();
           });
         }
@@ -379,18 +383,20 @@ function renderMonth(){
 
   var daysInMonth = new Date(y, m+1, 0).getDate();
   for(var day=1; day<=daysInMonth; day++){
-    var d = new Date(y,m,day);
-    var dkey = dateKey(d);
+    let d = new Date(y,m,day);
+    let dkey = dateKey(d);
     var cell = el('div','month-cell', day);
     if(dkey === dateKey(todayDate())) cell.classList.add('today');
     if(day === daysInMonth) cell.classList.add('monthend');
 
-    var future = d.getTime() > todayDate().getTime();
+    var future = d.getTime() > todayDate().getTime() || isBeforeStart(d);
     if(!future){
       if(h.type === "state"){
         var v = getEntry(h.id, dkey);
         var st = v ? h.states.filter(function(s){return s.key===v;})[0] : null;
         if(st){ cell.style.background = st.color; cell.style.color = "#fff"; cell.style.borderColor="transparent"; }
+        cell.style.cursor = "pointer";
+        cell.addEventListener('click', function(){ cycleState(h, dkey); renderAll(); });
       } else {
         var pages = getEntry(h.id, dkey) || 0;
         if(pages>0){
@@ -400,6 +406,8 @@ function renderMonth(){
           cell.style.color = "#fff";
           cell.style.borderColor = "transparent";
         }
+        cell.style.cursor = "pointer";
+        cell.addEventListener('click', function(){ openEditSheet(h, dkey, d); });
       }
     } else {
       cell.style.opacity = .3;

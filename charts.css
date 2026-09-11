@@ -58,3 +58,10 @@
 @media (min-width:520px){
   .rings-row{grid-template-columns:repeat(2,1fr);}
 }
+
+@media (max-width:380px){
+  .ring-card{padding:12px 8px;}
+  .ring-card svg{width:88px;height:88px;}
+  .ring-num{font-size:17px;}
+  .chart-card{padding:12px 10px;}
+}
