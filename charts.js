@@ -57,7 +57,7 @@ document.getElementById('rangeLabel').textContent = fmtShort(start) + " – " + 
 /* ---------------- rings ---------------- */
 function ring(pct, color, valueLabel, title, sub){
   var r = 42, sw = 9, c = 2*Math.PI*r;
-  var offset = c * (1 - Math.min(1,pct)/100);
+  var offset = c * (1 - Math.min(100,pct)/100);
   var wrap = document.createElement('div');
   wrap.className = 'ring-card';
   var s = svg('svg',{width:104,height:104,viewBox:'0 0 104 104'});
