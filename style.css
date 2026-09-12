@@ -201,6 +201,23 @@ section{margin-top:22px;}
 .stat-num{font-size:21px;font-weight:800;font-family:'Cairo',sans-serif;font-variant-numeric:tabular-nums;}
 .stat-label{font-size:10.5px;color:var(--ink-muted);font-weight:700;margin-top:3px;line-height:1.3;}
 
+/* totals */
+.totals-grid{display:flex;flex-direction:column;gap:10px;}
+.totals-card{
+  background:var(--surface);border:1px solid var(--border-soft);border-radius:16px;
+  padding:14px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px;
+}
+.totals-icon{
+  width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex:none;
+}
+.totals-name{font-size:12.5px;font-weight:700;color:var(--ink-muted);flex:none;width:52px;}
+.totals-pair{display:flex;flex:1;gap:0;}
+.totals-item{flex:1;text-align:center;padding:0 6px;}
+.totals-item + .totals-item{border-inline-start:1px solid var(--border-soft);}
+.totals-num{font-size:19px;font-weight:800;font-family:'Cairo',sans-serif;font-variant-numeric:tabular-nums;color:var(--ink);}
+.totals-lbl{font-size:10px;color:var(--ink-faint);font-weight:600;margin-top:2px;}
+
 /* month */
 .tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;}
 .tab-btn{
@@ -311,6 +328,10 @@ section{margin-top:22px;}
   .stat-tile{padding:10px 5px;}
   .quick-row{gap:4px;}
   .quick-btn{font-size:11px;padding:7px 0;}
+  .totals-card{padding:11px 10px;gap:8px;}
+  .totals-name{width:auto;font-size:11px;}
+  .totals-num{font-size:16px;}
+  .totals-lbl{font-size:9px;}
 }
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important;}}

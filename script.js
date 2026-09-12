@@ -346,6 +346,51 @@ function renderStats(){
   });
 }
 
+function habitTotal(habit, fromKey, toKey){
+  var entries = data.entries[habit.id] || {};
+  var sum = 0;
+  for(var k in entries){
+    if(k < fromKey || k > toKey) continue;
+    if(habit.type === "state"){
+      if(entries[k] === habit.states[0].key) sum++;
+    } else {
+      sum += entries[k] || 0;
+    }
+  }
+  return sum;
+}
+
+function renderTotals(){
+  var today = todayDate();
+  var monthStart = dateKey(new Date(today.getFullYear(), today.getMonth(), 1));
+  var todayKey = dateKey(today);
+  document.getElementById('totalsMonthLabel').textContent = MONTH_NAMES[today.getMonth()] + " " + today.getFullYear();
+
+  var grid = document.getElementById('totalsGrid');
+  grid.innerHTML = "";
+  data.habits.forEach(function(h, idx){
+    var monthTotal = habitTotal(h, monthStart, todayKey);
+    var allTotal = habitTotal(h, data.startDate, todayKey);
+    var unit = h.type === "state" ? "يوم" : (h.unit || "");
+
+    var card = el('div','totals-card');
+    var icon = el('div','totals-icon', h.icon || "•");
+    icon.style.background = habitSoft(h, idx);
+    card.appendChild(icon);
+    card.appendChild(el('div','totals-name', h.name));
+
+    var pair = el('div','totals-pair');
+    var m = el('div','totals-item');
+    m.innerHTML = '<div class="totals-num mono">'+monthTotal+'</div><div class="totals-lbl">'+unit+' هذا الشهر</div>';
+    var a = el('div','totals-item');
+    a.innerHTML = '<div class="totals-num mono">'+allTotal+'</div><div class="totals-lbl">'+unit+' إجمالي</div>';
+    pair.appendChild(m); pair.appendChild(a);
+    card.appendChild(pair);
+
+    grid.appendChild(card);
+  });
+}
+
 /* ---------- month view ---------- */
 var monthState = { habitIdx: 0, year: todayDate().getFullYear(), month: todayDate().getMonth() };
 
@@ -657,6 +702,7 @@ function renderAll(){
   renderTodayCards();
   renderWeekStrips();
   renderStats();
+  renderTotals();
   renderMonth();
   renderHabitList();
 }
